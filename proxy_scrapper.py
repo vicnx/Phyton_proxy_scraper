@@ -1,11 +1,12 @@
+#   Author      : Vicente Andani
+#   GitHub      : https://github.com/vicnx
+#   Year        : 2022
+#   Description : Gets proxies from two different websites, you can tell it the copies you want it to make of the file.
+
 from cgitb import text
 from doctest import master
-import re
 import socket
 from turtle import width
-import chromedriver_autoinstaller
-from selenium import webdriver
-import tkinter
 import customtkinter
 from tkfontawesome import icon_to_image 
 import webbrowser

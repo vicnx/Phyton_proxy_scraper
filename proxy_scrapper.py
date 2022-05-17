@@ -1,5 +1,7 @@
 from cgitb import text
 from doctest import master
+import re
+import socket
 from turtle import width
 import chromedriver_autoinstaller
 from selenium import webdriver
@@ -83,6 +85,13 @@ class App(customtkinter.CTk):
 
   def open_github(self):
       webbrowser.open('https://www.github.com/vicnx', new=0, autoraise=True)
+  def valid_ip(self,address):
+      try: 
+          print(address)
+          socket.inet_ntoa(address)
+          return True
+      except:
+          return False
 
   def get_proxies(self):
     if (self.checkbox_proxy1.get() == 0) and (self.checkbox_proxy2.get()== 0):
@@ -92,8 +101,15 @@ class App(customtkinter.CTk):
         if self.checkbox_proxy1.get() == 1:
           # First webpage API method
           url1 = 'https://www.proxy-list.download/api/v1/get?type=http'
-          r1 = requests.get(url1)
-          f.write(r1.text.encode())
+          try:
+              r1 = requests.get(url1)
+              if "text/html" in r1.headers["content-type"]:
+                messagebox.showerror(message='The proxy-list.download api is not working.', title="Error")
+              else:
+                f.write(r1.text.encode())
+          except requests.exceptions.RequestException as e:  # This is the correct syntax
+              messagebox.showerror(message='The proxy-list.download api is not working.', title="Error")
+              messagebox.showerror(message=e, title="Error")
         if self.checkbox_proxy2.get() == 1:
           # Another webpage (bs method)
           url2 = 'https://free-proxy-list.net'
@@ -132,7 +148,6 @@ class App(customtkinter.CTk):
   #         #           break
   #         # except:    
   #         #   print('Bad proxy')
-
   def start(self):
         self.mainloop()
 

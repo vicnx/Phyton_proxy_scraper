@@ -18,7 +18,6 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
 class App(customtkinter.CTk):
-  ncopies = 3
   defaultNameFile= 'proxies'
   def __init__(self):
     super().__init__()
@@ -80,7 +79,6 @@ class App(customtkinter.CTk):
 
   def update_copies(self,val):
     # Funcion para actualizar las copias
-    self.ncopies = str(self.slider_1.get()).split('.')[0]
     self.label_slider.config(text='Copies: {numberCopies}'.format(numberCopies= val).split('.')[0])
 
   def open_github(self):
@@ -121,11 +119,10 @@ class App(customtkinter.CTk):
             proxy = row.contents[0].text + ':'+ row.contents[1].text + '\n'
             f.write(proxy.encode())
       with open('{name}.txt'.format(name=self.file_name_input.get()), 'r+') as fileRead:
-
         x = len(fileRead.readlines())
         # Copias de archivos
-        if int(self.ncopies) > 1:
-          for i in range(int(self.ncopies)):
+        if int(str(self.slider_1.get()).split('.')[0]) > 0:
+          for i in range(int(str(self.slider_1.get()).split('.')[0])):
             shutil.copyfile('{name}.txt'.format(name=self.file_name_input.get()), '{name}.txt'.format(name=self.file_name_input.get()+str(i+1)))
 
         #mensaje de OK

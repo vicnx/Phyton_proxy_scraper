@@ -24,7 +24,7 @@ class App(customtkinter.CTk):
     github = icon_to_image("github", fill="black", scale_to_width=20)  
     # Configurar ventana principal
     self.title("Proxy Scrapper v1.0")
-    self.geometry("450x300")
+    self.geometry("370x400")
     self.resizable(False, False)
     self.protocol("WM_DELETE_WINDOW", self.on_closing)
     self.grid_columnconfigure(0, weight=1)
@@ -39,24 +39,29 @@ class App(customtkinter.CTk):
     self.file_name_label = customtkinter.CTkLabel(master=self.frame_up,text="Enter file name: ")
     self.file_name_label.grid(row=0, column=0)
     self.file_name_input = customtkinter.CTkEntry(master=self.frame_up, placeholder_text="File name")
-    self.file_name_input.grid(row=0, column=1, columnspan=2, pady=20, padx=20, sticky="we")
+    self.file_name_input.grid(row=0, column=1, columnspan=1, pady=20, padx=20, sticky="we")
     self.file_name_input.insert('end',str(self.defaultNameFile))
+
+    self.checkbox_proxy1 = customtkinter.CTkCheckBox(master=self.frame_up, text="proxy-list.download", onvalue=1, offvalue=0)
+    self.checkbox_proxy1.grid(row=1, column=0, columnspan=1, pady=20, padx=20, sticky="we")
+    self.checkbox_proxy2 = customtkinter.CTkCheckBox(master=self.frame_up, text="free-proxy-list.net", onvalue=1, offvalue=0)
+    self.checkbox_proxy2.grid(row=1, column=1, columnspan=1, pady=20, padx=20, sticky="we")
 
     # Slider para las copias
     self.slider_1 = customtkinter.CTkSlider(master=self.frame_up, from_=0, to=4, number_of_steps=4, command=self.update_copies)
-    self.slider_1.grid(row=2, column=0, columnspan=3, pady=10, padx=50, sticky="we")
+    self.slider_1.grid(row=3, column=0, columnspan=2, pady=10, padx=50, sticky="we")
     self.label_slider = customtkinter.CTkLabel(master=self.frame_up,text='Copies: {numberCopies}'.format(numberCopies= self.slider_1.get()).split('.')[0])
-    self.label_slider.grid(row=1, column=1, pady=10, padx=10)
+    self.label_slider.grid(row=4, column=0, columnspan=2,pady=10, padx=10)
 
     # Labels vacias para recolocar
     self.label_1 = customtkinter.CTkLabel(master=self.frame_up,text="")
-    self.label_1.grid(row=3, column=0, pady=10, padx=10)
+    self.label_1.grid(row=5, column=0, pady=10, padx=10)
     self.label_2 = customtkinter.CTkLabel(master=self.frame_up,text="")
-    self.label_2.grid(row=3, column=2, pady=10, padx=10)
+    self.label_2.grid(row=5, column=2, pady=10, padx=10)
 
     # Boton para descargar los proxies
     self.proxy_button = customtkinter.CTkButton(master=self.frame_up,text="Get Proxies",fg_color=("gray75", "gray30"), command=lambda:self.get_proxies(), compound = 'left')
-    self.proxy_button.grid(row=3, column=1, pady=10, padx=20, sticky="w", rowspan=2)
+    self.proxy_button.grid(row=5, column=0, columnspan=2,pady=10, padx=10)
 
     # Frame inferior donde esta el boton de github
     self.frame_bottom = customtkinter.CTkFrame(master=self)
@@ -67,6 +72,10 @@ class App(customtkinter.CTk):
     self.github_button = customtkinter.CTkButton(master=self.frame_bottom,text="Github",fg_color=("gray75", "gray30"), command=lambda:self.open_github(), image = github, compound = 'left')
     self.github_button.grid(row=0, column=0, pady=10, padx=20, sticky="we")
 
+    # DEFAULT VALUES
+    self.checkbox_proxy1.select()
+    self.checkbox_proxy2.select()
+
   def update_copies(self,val):
     # Funcion para actualizar las copias
     self.ncopies = str(self.slider_1.get()).split('.')[0]
@@ -76,22 +85,25 @@ class App(customtkinter.CTk):
       webbrowser.open('https://www.github.com/vicnx', new=0, autoraise=True)
 
   def get_proxies(self):
+    if (self.checkbox_proxy1.get() == 0) and (self.checkbox_proxy2.get()== 0):
+      messagebox.showerror(message='You have to select at least one website.', title="Error")
+    else:
       with open('{name}.txt'.format(name=self.file_name_input.get()), 'bw') as f:
-        # First webpage API method
-        url1 = 'https://www.proxy-list.download/api/v1/get?type=http'
-        r1 = requests.get(url1)
-        f.write(r1.text.encode())
-
-        # Another webpage (bs method)
-        url2 = 'https://free-proxy-list.net'
-        r2 = requests.get(url2)
-        bs = BeautifulSoup(r2.text, 'lxml')
-        table = bs.find('tbody')
-        rows = table.find_all('tr')
-        for row in rows:
-          proxy = row.contents[0].text + ':'+ row.contents[1].text + '\n'
-          f.write(proxy.encode())
-
+        if self.checkbox_proxy1.get() == 1:
+          # First webpage API method
+          url1 = 'https://www.proxy-list.download/api/v1/get?type=http'
+          r1 = requests.get(url1)
+          f.write(r1.text.encode())
+        if self.checkbox_proxy2.get() == 1:
+          # Another webpage (bs method)
+          url2 = 'https://free-proxy-list.net'
+          r2 = requests.get(url2)
+          bs = BeautifulSoup(r2.text, 'lxml')
+          table = bs.find('tbody')
+          rows = table.find_all('tr')
+          for row in rows:
+            proxy = row.contents[0].text + ':'+ row.contents[1].text + '\n'
+            f.write(proxy.encode())
       with open('{name}.txt'.format(name=self.file_name_input.get()), 'r+') as fileRead:
 
         x = len(fileRead.readlines())

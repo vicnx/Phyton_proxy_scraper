@@ -1,14 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 import sys
+import site
 from os import path
 site_packages = next(p for p in sys.path if 'site-packages' in p)
 block_cipher = None
 
+url_sites_packages= site.getsitepackages()[1]
+print(url_sites_packages)
+
 
 a = Analysis(
     ['proxy_scrapper.py'],
-    pathex=['C:\\Users\\vicen\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages', 'C:\\proxy_scrapper'],
+    pathex=[url_sites_packages, 'C:\\proxy_scrapper'],
     binaries=[],
     datas=[(path.join(site_packages,"customtkinter"),"customtkinter"),(path.join(site_packages,"tksvg"),"tksvg")],
     hiddenimports=['customtkinter','tksvg'],

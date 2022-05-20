@@ -1,6 +1,8 @@
 <h1 align="center">Welcome to Python proxy scrapper 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="GUI" src="https://img.shields.io/badge/customtkinter-gui-orange" />
+  <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/customtkinter">
 </p>
 
 > Program made with python to understand the language a little. It gets proxies from two different websites, you can tell it the copies you want it to make of the file.
